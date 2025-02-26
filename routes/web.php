@@ -5,6 +5,7 @@ use App\Http\Controllers\PagesController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
+use App\Http\Controllers\PaymentController;
 
 Route::get('/', [PagesController::class, 'homePage']);
 
@@ -46,3 +47,5 @@ Route::get('/preview', function () {
     $capturedImages = session('captured_images', []);
     return view('preview', compact('capturedImages'));
 });
+
+Route::post('/get-snap-token', [PaymentController::class, 'getSnapToken']);

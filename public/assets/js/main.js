@@ -2,10 +2,24 @@ const slideBtn = document.getElementById("slideBtn");
 const slideContainer = document.getElementById("slideContainer");
 const slideProgress = document.getElementById("slideProgress");
 const homePage = document.getElementById("homePage");
+const cashlessPage = document.getElementById("cashlessPage");
 const paymentMethodPage = document.getElementById("paymentMethodPage");
 const container = document.querySelector(".container");
 
 let isSlid = false;
+
+window.addEventListener("popstate", function (event) {
+    history.pushState(null, "", location.href);
+});
+history.pushState(null, "", location.href);
+
+// window.addEventListener("touchstart", function (event) {
+// event.preventDefault();
+// }, { passive: false });
+
+window.addEventListener("touchmove", function (event) {
+event.preventDefault();
+}, { passive: false });
 
 function startSlide(event) {
     const maxMove = slideContainer.offsetWidth - slideBtn.offsetWidth;
@@ -69,13 +83,14 @@ function showVoucherPage() {
 }
 
 function hideVoucherPage() {
+    console.log('hide voucher');
     let paymentPage = document.getElementById("paymentMethodPage");
     let voucherPage = document.getElementById("voucherPage");
 
-    voucherPage.style.opacity = "0";
+    voucherPage.classList.add("fadeOutContent");
+    voucherPage.classList.remove("fadeIn");
     setTimeout(() => {
-        voucherPage.style.display = "none";
-        paymentPage.style.display = "block";
+        paymentPage.classList.add("fadeIn");
         setTimeout(() => {
             paymentPage.style.opacity = "1";
         }, 50);
@@ -83,7 +98,6 @@ function hideVoucherPage() {
 }
 
 document.getElementById("voucher-card").addEventListener("click", showVoucherPage);
-document.getElementById("backButton").addEventListener("click", hideVoucherPage);
 
 let claimButton = document.querySelector(".voucher-claim-btn");
 let voucherPage = document.getElementById("voucherPage");
@@ -105,6 +119,25 @@ claimButton.addEventListener("click", function () {
         templatePage.classList.add("fadeIn");
     }, 500); // Adjust time to match transition duration
 });
+
+voucherBackButton.addEventListener("click", function () {
+    // Add fade-out class to voucherPage
+    voucherPage.classList.add("fadeOutContent");
+
+    // Remove fadeIn class from voucherPage
+    voucherPage.classList.remove("fadeIn");
+
+    // Wait for fade-out animation to complete before switching visibility
+    setTimeout(() => {
+        voucherPage.style.display = "none";
+        paymentPage.style.display = "block";
+
+        // Add fadeIn class to templatePage
+        paymentPage.classList.add("fadeIn");
+    }, 500); // Adjust time to match transition duration
+});
+
+
 
 const slider = document.getElementById("slider");
 const prev = document.querySelector(".prev");
@@ -132,5 +165,90 @@ slides.forEach(slide => {
 });
 
 document.getElementById("cashless-card").addEventListener("click", function() {
-    alert("Server Error: Midtrans tidak merespon");
+    // Add fade-out class to voucherPage
+    paymentMethodPage.classList.add("fadeOutContent");
+
+    // Remove fadeIn class from voucherPage
+    paymentMethodPage.classList.remove("fadeIn");
+
+    // Wait for fade-out animation to complete before switching visibility
+    setTimeout(() => {
+        paymentMethodPage.style.display = "none";
+        cashlessPage.style.display = "block";
+
+        // Add fadeIn class to templatePage
+        cashlessPage.classList.add("fadeIn");
+
+        displaySnapQRIS();
+    }, 500); // Adjust time to match transition duration
+
+    async function displaySnapQRIS() {
+        try {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            const response = await fetch('/get-snap-token', { 
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken // Sertakan CSRF token
+                }
+            });
+
+            const data = await response.json();
+
+            if (data.token) {
+                snap.hide();
+                snap.embed(data.token, {
+                    embedId: 'snap-container',
+                    onSuccess: function(result) {
+                        console.log("Payment Success:", result);
+                        // Add fade-out class to voucherPage
+                        cashlessPage.classList.add("fadeOutContent");
+
+                        // Remove fadeIn class from voucherPage
+                        cashlessPage.classList.remove("fadeIn");
+
+                        // Wait for fade-out animation to complete before switching visibility
+                        setTimeout(() => {
+                            cashlessPage.style.display = "none";
+                            templatePage.style.display = "block";
+
+                            // Add fadeIn class to templatePage
+                            templatePage.classList.add("fadeIn");
+                        }, 500); // Adjust time to match transition duration
+                    },
+                    onPending: function(result) {
+                        console.log("Payment Pending:", result);
+                    },
+                    onError: function(result) {
+                        console.error("Payment Failed:", result);
+                    }
+                });
+            } else {
+                console.error("Failed to fetch Snap token");
+            }
+        } catch (error) {
+            console.error("Error fetching Snap token:", error);
+        }
+    }
+
+    
+    let cashlessBackButton = document.getElementById("cashlessPage");
+
+    cashlessBackButton.addEventListener("click", function () {
+        // Add fade-out class to voucherPage
+        cashlessPage.classList.add("fadeOutContent");
+    
+        // Remove fadeIn class from voucherPage
+        cashlessPage.classList.remove("fadeIn");
+    
+        // Wait for fade-out animation to complete before switching visibility
+        setTimeout(() => {
+            cashlessPage.style.display = "none";
+            paymentMethodPage.style.display = "block";
+    
+            // Add fadeIn class to templatePage
+            paymentMethodPage.classList.add("fadeIn");
+        }, 500); // Adjust time to match transition duration
+    });
 });

@@ -225,31 +225,50 @@
             z-index: -1000;
         }
 
+        #gif-images {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-50%);
+            width: 500px;
+            height: auto;
+        }
+
+        #gif-area {
+            display: none;
+        }
+
     </style>
 </head>
 <body>
     
-    @php
-        $no = 0;
-    @endphp
-
-    @foreach($capturedImages as $image)
+    <div class="frame-area">
         @php
-            $no = $no + 1;
+            $no = 0;
         @endphp
-        <div class="images image{{$no}}" style="background-image: url('{{ $image }}');"></div>
-    @endforeach
 
-    @foreach($capturedImages as $image)
-        @php
-            $no = $no + 1;
-        @endphp
-        <div class="images image{{$no}}" style="background-image: url('{{ $image }}');"></div>
-    @endforeach
+        @foreach($capturedImages as $image)
+            @php
+                $no = $no + 1;
+            @endphp
+            <div class="images image{{$no}}" style="background-image: url('{{ $image }}');"></div>
+        @endforeach
+
+        @foreach($capturedImages as $image)
+            @php
+                $no = $no + 1;
+            @endphp
+            <div class="images image{{$no}}" style="background-image: url('{{ $image }}');"></div>
+        @endforeach
+    </div>
 
     <div class="frame-container">
         <img src="/assets/img/frame1.png" class="frame-image">
     </div>
+
+    <section id="gif-area">
+        <img src="" id="gif-images">
+    </section>
 
     <a href="/" id="done-button">Done</a>
 
@@ -290,7 +309,44 @@
             setInterval(() => {
                 gifElement.style.backgroundImage = `url('${images[index]}')`;
                 index = (index + 1) % images.length; // Loop kembali ke awal setelah mencapai gambar terakhir
-            }, 2000);
+            }, 500);
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            let images = [
+                "{{ $capturedImages[0] }}",
+                "{{ $capturedImages[1] }}",
+                "{{ $capturedImages[2] }}"
+            ];
+            
+            let index = 0;
+            let gifElement = document.getElementById("gif-image");
+            let gifElement2 = document.getElementById("gif-images");
+
+            setInterval(() => {
+                gifElement.style.backgroundImage = `url('${images[index]}')`;
+                gifElement2.src = images[index];
+                index = (index + 1) % images.length; // Loop kembali ke awal setelah mencapai gambar terakhir
+            }, 500);
+
+            // Handle click events to toggle visibility
+            const gifCard = document.querySelector(".gif-card");
+            const photosCard = document.querySelector(".photos-card");
+            const frameArea = document.querySelector(".frame-area");
+            const frameContainer = document.querySelector(".frame-container");
+            const gifArea = document.getElementById("gif-area");
+
+            gifCard.addEventListener("click", function () {
+                frameArea.style.display = "none";
+                frameContainer.style.display = "none";
+                gifArea.style.display = "block";
+            });
+
+            photosCard.addEventListener("click", function () {
+                gifArea.style.display = "none";
+                frameArea.style.display = "block";
+                frameContainer.style.display = "flex";
+            });
         });
 
     </script>

@@ -1,9 +1,136 @@
+@font-face {
+    font-family: 'Poppins';
+    src: url('/assets/fonts/PoppinsPoppins-Thin.ttf') format('truetype');
+    font-weight: 100;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('/assets/fonts/PoppinsPoppins-ThinItalic.ttf') format('truetype');
+    font-weight: 100;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('/assets/fonts/PoppinsPoppins-ExtraLight.ttf') format('truetype');
+    font-weight: 200;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('/assets/fonts/PoppinsPoppins-ExtraLightItalic.ttf') format('truetype');
+    font-weight: 200;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('/assets/fonts/PoppinsPoppins-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('/assets/fonts/PoppinsPoppins-LightItalic.ttf') format('truetype');
+    font-weight: 300;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('/assets/fonts/PoppinsPoppins-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('/assets/fonts/PoppinsPoppins-Italic.ttf') format('truetype');
+    font-weight: 400;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('/assets/fonts/PoppinsPoppins-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('/assets/fonts/PoppinsPoppins-MediumItalic.ttf') format('truetype');
+    font-weight: 500;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('/assets/fonts/PoppinsPoppins-SemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('/assets/fonts/PoppinsPoppins-SemiBoldItalic.ttf') format('truetype');
+    font-weight: 600;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('/assets/fonts/PoppinsPoppins-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('/assets/fonts/PoppinsPoppins-BoldItalic.ttf') format('truetype');
+    font-weight: 700;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('/assets/fonts/PoppinsPoppins-ExtraBold.ttf') format('truetype');
+    font-weight: 800;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('/assets/fonts/PoppinsPoppins-ExtraBoldItalic.ttf') format('truetype');
+    font-weight: 800;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('/assets/fonts/PoppinsPoppins-Black.ttf') format('truetype');
+    font-weight: 900;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('/assets/fonts/PoppinsPoppins-BlackItalic.ttf') format('truetype');
+    font-weight: 900;
+    font-style: italic;
+}
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Arial, sans-serif;
+    font-family: 'Poppins', sans-serif;
 }
+
 body {
     display: flex;
     justify-content: center;
@@ -42,6 +169,7 @@ body {
     border-radius: 255px;
     overflow: hidden;
     margin-top: 20px;
+    border: 1px solid #000;
 }
 .slide-btn {
     position: absolute;
@@ -297,4 +425,30 @@ body {
     left: 50%;
     transform: translateX(-50%);
     text-decoration: none;
+}
+
+#cashless-title {
+    position: fixed;
+    top: 44px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.cashless-subtitle{
+    font-size: 22px;
+    font-weight: 500;
+    margin: 0px;
+    padding: 0px;
+    color: #000;
+    position: fixed;
+    top: 115px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+#snap-container {
+    position: fixed;
+    top: 170px;
+    left: 50%;
+    transform: translateX(-50%);
 }

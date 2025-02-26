@@ -5,12 +5,13 @@
     <meta name="viewport" content="width=1280, height=800, initial-scale=1.0">
     <title>Kaama Photos</title>
     <link rel="stylesheet" href="/assets/css/style.css">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 <body>
-    <video class="background-video" autoplay loop muted>
+    <!-- <video class="background-video" autoplay loop muted>
         <source src="/assets/video/bg-gradient.mp4" type="video/mp4">
         Your browser does not support the video tag.
-    </video>
+    </video> -->
     
     <section id="homePage">
         <div class="container">
@@ -45,7 +46,7 @@
 
     <section id="voucherPage" style="display: none; opacity: 0; transition: opacity 0.5s ease;">
         <div class="voucher-container">
-            <button id="backButton" class="back-btn">&larr;</button>
+            <button id="voucherBackButton" class="back-btn" onclick="hideVoucherPage()">&larr;</button>
             <h2 class="voucher-title">Tukar Voucher</h2>
             <div class="voucher-box">
                 <!-- <p class="voucher-instruction">Masukkan kode voucher pada kolom di bawah ini</p> -->
@@ -91,7 +92,17 @@
         <a href="/cam" id="select-frame-button">Click to Start</a>
     </section>
 
-    
+    <section id="cashlessPage" style="display: none;">
+        <button id="backButtonCashless" class="back-btn">&larr;</button>
+        <img src="/assets/img/cashless-title.png" height="53px" width="auto" id="cashless-title">
+        <h1 class="cashless-subtitle">Pembayaran dicek secara otomatis</h1>
+
+        <div id="snap-container"></div>
+    </section>
+
+    <script type="text/javascript"
+        src="https://app.sandbox.midtrans.com/snap/snap.js"
+        data-client-key="SB-Mid-client-LxvW3HQoTRQ8rfC3"></script>
     <script src="/assets/js/main.js"></script>
 </body>
 </html>
