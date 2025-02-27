@@ -156,6 +156,7 @@
         const previewImage = document.getElementById('preview-image');
 
         let capturedImages = [];
+        let capturedVideos = [];
 
         navigator.mediaDevices.getUserMedia({ video: true })
             .then((stream) => {
@@ -166,83 +167,137 @@
                 alert("Permission to access the camera was denied.");
             });
 
-        function captureImage(callback) {
-            flashElement.style.opacity = '1';
-            setTimeout(() => {
-                flashElement.style.opacity = '0';
-            }, 100);
+            function startCountdown(callback) {
+                captureButton.style.opacity = '0';
+                let timer = 3;
+                countdownElement.style.display = 'block';
+                countdownElement.style.opacity = '1';
+                countdownElement.innerText = timer;
 
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-            const imageData = canvas.toDataURL('image/png');
-            
-            const img = document.createElement('img');
-            img.src = imageData;
-            capturedImagesContainer.appendChild(img);
+                const countdownInterval = setInterval(() => {
+                    timer--;
+                    if (timer > 0) {
+                        countdownElement.innerText = timer;
+                    } else {
+                        clearInterval(countdownInterval);
+                        countdownElement.style.opacity = '0';
+                        setTimeout(() => {
+                            countdownElement.style.display = 'none';
+                        }, 500);
+                        callback();
+                    }
+                }, 1000);
 
-            capturedImages.push(imageData);
-            
-            // Show preview
-            previewImage.src = imageData;
-            previewContainer.style.display = 'block';
-            
-            setTimeout(() => {
-                previewContainer.style.display = 'none';
-                callback();
-            }, 3000); // Show preview for 3 seconds
-        }
-
-        function startCountdown(callback) {
-            captureButton.style.opacity = '0';
-            let timer = 3;
-            countdownElement.style.display = 'block';
-            countdownElement.style.opacity = '1';
-            countdownElement.innerText = timer;
-
-            const countdownInterval = setInterval(() => {
-                timer--;
-                if (timer > 0) {
-                    countdownElement.innerText = timer;
-                } else {
-                    clearInterval(countdownInterval);
-                    countdownElement.style.opacity = '0';
-                    setTimeout(() => {
-                        countdownElement.style.display = 'none';
-                    }, 500);
-                    callback();
-                }
-            }, 1000);
-        }
-
-        function takeMultiplePhotos(times) {
-            let count = 0;
-            function takePhoto() {
-                if (count < times) {
-                    startCountdown(() => {
-                        captureImage(() => {
-                            count++;
-                            if (count < times) {
-                                setTimeout(takePhoto, 500); // Delay before next capture
-                            } else {
-                                captureButton.style.display = 'none';
-                                nextButton.style.display = 'block';
-                            }
-                        });
-                    });
-                }
+                // Start video capture when countdown starts
+                startVideoCapture();
             }
-            takePhoto();
-        }
+
+            function startVideoCapture() {
+                // Get video stream and start recording
+                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                    console.error("UserMedia not supported in this browser.");
+                    return;
+                }
+
+                navigator.mediaDevices.getUserMedia({ video: true })
+                    .then(stream => {
+                        const videoElement = document.createElement('video');
+                        videoElement.srcObject = stream;
+                        videoElement.play();
+
+                        // Create a media recorder to capture the video
+                        const mediaRecorder = new MediaRecorder(stream);
+                        const videoChunks = [];
+
+                        mediaRecorder.ondataavailable = (event) => {
+                            videoChunks.push(event.data);
+                        };
+
+                        mediaRecorder.onstop = () => {
+                            const videoBlob = new Blob(videoChunks, { type: 'video/webm' });
+
+                            // Convert video Blob to Base64
+                            const reader = new FileReader();
+                            reader.onloadend = function () {
+                                const base64Video = reader.result.split(',')[1]; // Remove "data:video/webm;base64,"
+                                capturedVideos.push(base64Video);
+                                console.log(capturedVideos);
+                            };
+
+                            reader.readAsDataURL(videoBlob);  // Convert Blob to Base64
+                        };
+
+                        // Start recording the video
+                        mediaRecorder.start();
+
+                        // Stop video capture after 3 seconds (as per your request)
+                        setTimeout(() => {
+                            mediaRecorder.stop();
+                            stream.getTracks().forEach(track => track.stop()); // Stop the video stream
+                        }, 3000); // 3 seconds of video recording
+                    })
+                    .catch(error => {
+                        console.error("Error accessing the camera:", error);
+                    });
+            }
+
+
+            function captureImage(callback) {
+                flashElement.style.opacity = '1';
+                setTimeout(() => {
+                    flashElement.style.opacity = '0';
+                }, 100);
+
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                const imageData = canvas.toDataURL('image/png');
+                
+                const img = document.createElement('img');
+                img.src = imageData;
+                capturedImagesContainer.appendChild(img);
+
+                capturedImages.push(imageData);
+                
+                // Show preview
+                previewImage.src = imageData;
+                previewContainer.style.display = 'block';
+                
+                setTimeout(() => {
+                    previewContainer.style.display = 'none';
+                    callback();
+                }, 3000); // Show preview for 3 seconds
+            }
+
+            function takeMultiplePhotos(times) {
+                let count = 0;
+                function takePhoto() {
+                    if (count < times) {
+                        startCountdown(() => {
+                            captureImage(() => {
+                                count++;
+                                if (count < times) {
+                                    setTimeout(takePhoto, 500); // Delay before next capture
+                                } else {
+                                    captureButton.style.display = 'none';
+                                    nextButton.style.display = 'block';
+                                }
+                            });
+                        });
+                    }
+                }
+                takePhoto();
+            }
+
 
         captureButton.addEventListener('click', () => {
             takeMultiplePhotos(3);
         });
 
         nextButton.addEventListener('click', (event) => {
-            event.preventDefault(); 
+            event.preventDefault();
 
             fetch('/upload-images', {
                 method: 'POST',
@@ -250,7 +305,7 @@
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                 },
-                body: JSON.stringify({ images: capturedImages })
+                body: JSON.stringify({ images: capturedImages, videos: capturedVideos })
             })
             .then(response => response.json())
             .then(data => {
@@ -262,6 +317,7 @@
             })
             .catch(error => console.error('Error:', error));
         });
+
 
     </script>
 </body>

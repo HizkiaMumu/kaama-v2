@@ -13,8 +13,11 @@ Route::get('/cam', [PagesController::class, 'camPage']);
 
 Route::post('/upload-images', function (Request $request) {
     $images = $request->input('images');
+    $videos = $request->input('videos');
     $savedImages = [];
+    $savedVideos = [];
 
+    // Save images (unchanged)
     foreach ($images as $index => $image) {
         $image = str_replace('data:image/png;base64,', '', $image);
         $image = str_replace(' ', '+', $image);
@@ -23,7 +26,16 @@ Route::post('/upload-images', function (Request $request) {
         $savedImages[] = asset('storage/' . $imageName);
     }
 
-    session(['captured_images' => $savedImages]);
+    // Save videos (base64 encoded)
+    foreach ($videos as $index => $video) {
+        $video = str_replace(' ', '+', $video);  // Make sure spaces are replaced with '+'
+        $videoName = 'video_' . time() . '_' . $index . '.webm'; // Save as .webm, or .mp4 if you prefer
+        Storage::disk('public')->put($videoName, base64_decode($video));
+        $savedVideos[] = asset('storage/' . $videoName);
+    }
+
+    // Store images and videos in the session
+    session(['captured_images' => $savedImages, 'captured_videos' => $savedVideos]);
 
     return response()->json(['success' => true]);
 });
@@ -45,7 +57,8 @@ Route::post('/upload-video', function (Request $request) {
 
 Route::get('/preview', function () {
     $capturedImages = session('captured_images', []);
-    return view('preview', compact('capturedImages'));
+    $capturedVideos = session('captured_videos', []);
+    return view('preview', compact('capturedImages', 'capturedVideos'));
 });
 
 Route::post('/get-snap-token', [PaymentController::class, 'getSnapToken']);

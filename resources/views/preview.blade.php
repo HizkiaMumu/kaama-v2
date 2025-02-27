@@ -238,29 +238,118 @@
             display: none;
         }
 
+        #live-area {
+            display: none;
+        }
+
+        .video {
+            position: fixed;
+            left: -100px;
+            top: -100px;
+            width: 230px;
+            height: 230px;
+            overflow: hidden;
+        }
+
+        .video video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .video1 {
+            top: 10px;
+            left: 390px;
+        }
+
+        .video2 {
+            top: 10px;
+            left: 660px;
+        }
+
+        .video3 {
+            top: 240px;
+            left: 390px;
+        }
+
+        .video4 {
+            top: 240px;
+            left: 660px;
+        }
+
+        .video5 {
+            top: 470px;
+            left: 390px;
+        }
+
+        .video6 {
+            top: 470px;
+            left: 660px;
+        }
+
+
     </style>
 </head>
 <body>
     
     <div class="frame-area">
         @php
-            $no = 0;
+            $noImage = 0;
         @endphp
 
         @foreach($capturedImages as $image)
             @php
-                $no = $no + 1;
+                $noImage = $noImage + 1;
             @endphp
-            <div class="images image{{$no}}" style="background-image: url('{{ $image }}');"></div>
+            <div class="images image{{$noImage}}" style="background-image: url('{{ $image }}');"></div>
         @endforeach
 
         @foreach($capturedImages as $image)
             @php
+                $noImage = $noImage + 1;
+            @endphp
+            <div class="images image{{$noImage}}" style="background-image: url('{{ $image }}');"></div>
+        @endforeach
+
+
+    </div>
+
+    <div id="live-area">
+        @php
+            $no = 0;
+            $noImage = 0;
+        @endphp
+
+        @foreach($capturedVideos as $video)
+            @php
                 $no = $no + 1;
             @endphp
-            <div class="images image{{$no}}" style="background-image: url('{{ $image }}');"></div>
+            <div class="video video{{$no}}">
+                <video autoplay loop muted>
+                    <source src="{{ $video }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        @endforeach
+
+
+
+        @foreach($capturedVideos as $video)
+            @php
+                $no = $no + 1;
+            @endphp
+            <div class="video video{{$no}}">
+                <video autoplay loop muted>
+                    <source src="{{ $video }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
         @endforeach
     </div>
+        
 
     <div class="frame-container">
         <img src="/assets/img/frame1.png" class="frame-image">
@@ -332,19 +421,30 @@
             // Handle click events to toggle visibility
             const gifCard = document.querySelector(".gif-card");
             const photosCard = document.querySelector(".photos-card");
+            const liveCard = document.querySelector(".live-card");
             const frameArea = document.querySelector(".frame-area");
             const frameContainer = document.querySelector(".frame-container");
             const gifArea = document.getElementById("gif-area");
+            const liveArea = document.getElementById("live-area");
 
             gifCard.addEventListener("click", function () {
                 frameArea.style.display = "none";
+                liveArea.style.display = "none";
                 frameContainer.style.display = "none";
                 gifArea.style.display = "block";
             });
 
             photosCard.addEventListener("click", function () {
                 gifArea.style.display = "none";
+                liveArea.style.display = "none";
                 frameArea.style.display = "block";
+                frameContainer.style.display = "flex";
+            });
+
+            liveCard.addEventListener("click", function () {
+                gifArea.style.display = "none";
+                frameArea.style.display = "none";
+                liveArea.style.display = "block";
                 frameContainer.style.display = "flex";
             });
         });
