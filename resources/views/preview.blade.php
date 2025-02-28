@@ -51,6 +51,7 @@
             bottom: 45px;
             width: 106px;
             height: 106px;
+            cursor: pointer;
         }
 
         .photos-card {
@@ -65,7 +66,6 @@
             font-weight: 500;
             color: #fff;
             
-            /* Untuk pusatkan teks */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -84,7 +84,6 @@
             font-weight: 500;
             color: #fff;
             
-            /* Untuk pusatkan teks */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -103,7 +102,6 @@
             font-weight: 500;
             color: #fff;
             
-            /* Untuk pusatkan teks */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -290,6 +288,43 @@
             left: 660px;
         }
 
+        /* Modal Styles */
+        #printModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+
+        .modal-content {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            width: 300px;
+        }
+
+        .modal-content input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .modal-content button {
+            width: 100%;
+            padding: 10px;
+            background-color: #02548B;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
 
     </style>
 </head>
@@ -313,8 +348,15 @@
             @endphp
             <div class="images image{{$noImage}}" style="background-image: url('{{ $image }}');"></div>
         @endforeach
+    </div>
 
-
+    <!-- Print Modal -->
+    <div id="printModal">
+        <div class="modal-content">
+            <h3>Enter number of copies</h3>
+            <input type="number" id="numCopies" min="1" placeholder="Number of copies">
+            <button onclick="submitPrint()">Submit</button>
+        </div>
     </div>
 
     <div id="live-area">
@@ -361,13 +403,11 @@
 
     <a href="/" id="done-button">Done</a>
 
-    <img src="/assets/img/print-icon.png" class="print-icon">
+    <img src="/assets/img/print-icon.png" class="print-icon" id="printIcon">
 
     <img src="/assets/img/qr-code.png" class="qr-icon">
 
     <p class="scan-title"><i class="fas fa-arrow-left"></i> Scan to Download</p>
-
-
 
     <div class="live-card">
         <div id="live-image"></div>
@@ -385,6 +425,23 @@
     </div>
 
     <script>
+        // Open the print modal when clicking the print icon
+        document.getElementById('printIcon').addEventListener('click', function () {
+            document.getElementById('printModal').style.display = 'flex';
+        });
+
+        // Submit the print request
+        function submitPrint() {
+            // Get the number of copies (for now, we are just simulating the action)
+            const numCopies = document.getElementById('numCopies').value;
+
+            // Close the modal after submission
+            document.getElementById('printModal').style.display = 'none';
+
+            // Show the error message
+            alert("Error: printer not detected");
+        }
+
         document.addEventListener("DOMContentLoaded", function () {
             let images = [
                 "{{ $capturedImages[0] }}",
@@ -448,7 +505,6 @@
                 frameContainer.style.display = "flex";
             });
         });
-
     </script>
 </body>
 </html>

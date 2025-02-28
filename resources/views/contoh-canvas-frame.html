@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas dengan 6 Kotak dan Background Hitam</title>
+</head>
+<body>
+    <canvas id="myCanvas" width="1000" height="3500"></canvas>
+
+    <script>
+        // Mendapatkan referensi ke canvas dan context
+        var canvas = document.getElementById('myCanvas');
+        var ctx = canvas.getContext('2d');
+
+        // Mengatur latar belakang canvas menjadi hitam
+        ctx.fillStyle = 'blue';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Ukuran kotak
+        var boxWidth = 200;
+        var boxHeight = 100;
+
+        // Posisi untuk kotak pertama
+        var startX = 50;
+        var startY = 50;
+
+        // Memuat gambar untuk latar belakang kotak
+        var img = new Image();
+        img.src = "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQk9WCjTxzcVL-mbLwSygQVqUoEJnrhzHvtNZLf4SWBapq9Oslb7vPGWbl3-WJFFCkRQnuvsbNVkO8OQOEneywX_A";
+
+        // Setelah gambar dimuat, gambar kotak pertama dengan gambar tersebut sebagai latar belakang
+        img.onload = function() {
+            // Menyesuaikan gambar agar tidak gepeng, mempertahankan aspek rasio
+            var aspectRatio = img.width / img.height;
+            var newWidth = boxWidth;
+            var newHeight = boxWidth / aspectRatio;
+
+            if (newHeight > boxHeight) {
+                newHeight = boxHeight;
+                newWidth = boxHeight * aspectRatio;
+            }
+
+            // Menghitung posisi gambar agar berada di tengah kotak pertama
+            var centerX = startX + (boxWidth - newWidth) / 2;
+            var centerY = startY + (boxHeight - newHeight) / 2;
+
+            // Gambar kotak pertama dengan gambar yang telah dimuat sebagai latar belakang
+            ctx.drawImage(img, centerX, centerY, newWidth, newHeight);
+
+            // Gambar kotak-kotak pink lainnya
+            var offsetX = 50; // Jarak antar kotak horizontal
+            var offsetY = 50; // Jarak antar kotak vertikal
+            for (var row = 0; row < 3; row++) {
+                for (var col = 0; col < 2; col++) {
+                    // Hindari menggambar kotak pertama
+                    if (row === 0 && col === 0) continue;
+
+                    var x = startX + col * (boxWidth + offsetX);
+                    var y = startY + row * (boxHeight + offsetY);
+
+                    // Menghitung posisi gambar agar berada di tengah kotak lainnya
+                    var centerX = x + (boxWidth - newWidth) / 2;
+                    var centerY = y + (boxHeight - newHeight) / 2;
+
+                    // Gambar kotak pink dengan ukuran tetap
+                    ctx.fillStyle = 'pink';  // Warna kotak
+                    ctx.fillRect(x, y, boxWidth, boxHeight);
+
+                    // Gambar gambar sebagai latar belakang kotak lain
+                    ctx.drawImage(img, centerX, centerY, newWidth, newHeight); // Menjaga aspek rasio
+                }
+            }
+        };
+    </script>
+</body>
+</html>
